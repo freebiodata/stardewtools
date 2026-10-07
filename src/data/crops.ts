@@ -81,6 +81,9 @@ export const crops: Crop[] = [
 
   // ================= WINTER / SPECIAL =================
   { name: 'Powdermelon', season: 'winter', seedCost: null, seedNote: 'Raccoon Wife: 2 Pine Cone (not sold)', sellPrice: 60, growDays: 7, regrowDays: null, yieldPerHarvest: 1, isFruit: true },
+  { name: 'Fiber', season: 'special', seedCost: null, seedNote: 'Fiber Seeds: crafting (free recipe)', sellPrice: 1, growDays: 7, regrowDays: null, yieldPerHarvest: 5.5, isFruit: false, extraNote: '4-7 fiber/harvest; all seasons, no watering' },
+  { name: 'Taro Root', season: 'special', seedCost: null, seedNote: 'Island Trader: 2 Bone Fragment', sellPrice: 100, growDays: 10, regrowDays: null, yieldPerHarvest: 1, isFruit: false, spans: 'Summer on farm; year-round Ginger Island' },
+  { name: 'Tea Leaves', season: 'special', seedCost: null, seedNote: 'Tea Sapling: crafting (free)', sellPrice: 50, growDays: 20, regrowDays: 1, yieldPerHarvest: 1, isFruit: false, spans: 'All seasons; harvest last week of each season' },
   { name: 'Ancient Fruit', season: 'special', seedCost: null, seedNote: 'Ancient Seeds (crafted, free recipe)', sellPrice: 550, growDays: 28, regrowDays: 7, yieldPerHarvest: 1, isFruit: true, spans: 'Spring + Summer + Fall' },
   { name: 'Cactus Fruit', season: 'special', seedCost: 150, sellPrice: 75, growDays: 12, regrowDays: 3, yieldPerHarvest: 1, isFruit: true, seedNote: 'Greenhouse / Ginger Island' },
   { name: 'Pineapple', season: 'special', seedCost: null, seedNote: 'Island Trader: 1 Magma Cap', sellPrice: 300, growDays: 14, regrowDays: 7, yieldPerHarvest: 1, isFruit: true, spans: 'Summer on farm; year-round on Ginger Island' },
