@@ -1,0 +1,96 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ToolCard from '../../components/ToolCard.astro';
+import { site } from '../../data/site';
+
+const title = 'All Tools: Stardew Valley Profit Calculators | StardewTools';
+const description =
+  'Every StardewTools calculator in one place: crop profit with artisan processing, best-crop finder, keg and jar planner. Free, in-browser, no sign-up.';
+
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'All tools' },
+];
+
+const profit = [
+  { href: '/crop-profit-calculator/', title: 'Crop Profit Calculator', desc: 'Gold per day for any crop, raw or processed through kegs and jars.' },
+  { href: '/best-crop-calculator/', title: 'Best Crop Finder', desc: 'Rank every crop for the days you have left in the season.' },
+];
+
+const planning = [
+  { href: '/keg-calculator/', title: 'Keg & Jar Planner', desc: 'Plan processing capacity: how many kegs for how many crops, and the payout.' },
+];
+
+const chooser = [
+  ['I want the most gold from my season', 'Best Crop Finder'],
+  ['I want to compare one crop raw vs keg vs jar', 'Crop Profit Calculator'],
+  ['I just built a keg shed and need a plan', 'Keg & Jar Planner'],
+  ['I do not know if my crop will finish before season end', 'Best Crop Finder (it filters those out)'],
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  breadcrumbs={breadcrumbs}
+  canonical="/tools/"
+>
+  <div class="wrap">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <div class="hero">
+      <h1>All tools</h1>
+      <p class="value-line">
+        Focused calculators for Stardew Valley profit planning, all free and running entirely in your
+        browser.
+      </p>
+    </div>
+
+    <section class="section" aria-labelledby="profit">
+      <h2 id="profit" style="margin-top:0">Profit calculators</h2>
+      <ul class="tool-cards">
+        {profit.map((t) => <ToolCard href={t.href} title={t.title} desc={t.desc} />)}
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="planning">
+      <h2 id="planning">Planning</h2>
+      <ul class="tool-cards">
+        {planning.map((t) => <ToolCard href={t.href} title={t.title} desc={t.desc} />)}
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="chooser">
+      <h2 id="chooser">Which tool do I need?</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Your situation</th><th>Start here</th></tr></thead>
+          <tbody>
+            {chooser.map(([problem, tool]) => (
+              <tr><td>{problem}</td><td>{tool}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="faq-cat">
+      <h2 id="faq-cat">Quick answers</h2>
+      <div class="faq">
+        <details>
+          <summary>Are all the tools really free?</summary>
+          <div class="faq-body"><p>Yes. No sign-up, no watermark, no caps. The maths runs in your browser, so there is nothing to meter.</p></div>
+        </details>
+        <details>
+          <summary>Do the tools store my farm plans?</summary>
+          <div class="faq-body"><p>No. Values you enter are processed locally and never transmitted or saved after you close the tab.</p></div>
+        </details>
+        <details>
+          <summary>Which game version is the data for?</summary>
+          <div class="faq-body"><p>Current release (1.6+) values, compiled from the Stardew Valley Wiki. Patches that change values ship with a changelog entry.</p></div>
+        </details>
+      </div>
+    </section>
+  </div>
+</Base>

@@ -1,0 +1,216 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Faq from '../../components/Faq.astro';
+import TrustBlock from '../../components/TrustBlock.astro';
+import { site } from '../../data/site';
+
+const title = 'Keg & Jar Planner: Processing Throughput | StardewTools';
+const description =
+  'Plan your Stardew kegs and jars: how many processors you need for your harvests, processing time per item, and total season payout. Free calculator.';
+
+const jsonLd = [
+  {
+    '@type': 'WebApplication',
+    '@id': `${site.url}/keg-calculator/#app`,
+    name: 'Keg & Jar Planner',
+    url: `${site.url}/keg-calculator/`,
+    description:
+      'Plan keg and preserves jar capacity for Stardew Valley harvests: throughput, timing and payouts.',
+    applicationCategory: 'GameApplication',
+    operatingSystem: 'Any',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  },
+];
+
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'All tools', href: '/tools/' },
+  { name: 'Keg & jar planner' },
+];
+
+const faq = [
+  {
+    q: 'How many kegs do I need?',
+    a: 'Divide your total items by how many batches fit in the season: batches = floor(season days ÷ processing days). Kegs needed = items ÷ batches. Wine takes ~6.25 days, juice ~4 days, pale ale ~1.4 days, so hops processing supports far more throughput per keg than wine.',
+  },
+  {
+    q: 'Kegs or preserves jars first?',
+    a: 'Kegs win for valuable produce: wine is 3× fruit base vs jelly at 2×+50, so the keg passes the jar at fruit prices above ~50g (the wiki breakpoint). Jars are cheaper to make (wood+stone vs wood+bars) and better for low-value crops. Build kegs when you can afford them.',
+  },
+  {
+    q: 'Does processing time break even in one season?',
+    a: 'Wine at 6.25 days gives ~4 batches per season; jelly at ~2.5 days gives ~11 batches. Jars therefore process more total items per machine, but kegs give more gold per item. The planner shows both: batch counts and total payout, so you can match machines to your harvest volume and time left.',
+  },
+  {
+    q: 'What about casks?',
+    a: 'Cask aging multiplies wine/cheese etc. again (silver ×1.25, gold ×1.5, iridium ×2 of the artisan value) but takes 1-2 seasons per batch and only works in the cellar. It is an endgame multiplier, add it after your keg throughput is saturated.',
+  },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  jsonLd={jsonLd}
+  breadcrumbs={breadcrumbs}
+  canonical="/keg-calculator/"
+>
+  <div class="wrap">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <div class="hero">
+      <h1>Keg &amp; Jar Planner</h1>
+      <p class="value-line">
+        Turn a pile of crops into a plan: how many processors you need, how many batches fit in the
+        season, and what the payout looks like, kegs vs jars.
+      </p>
+      <ul class="trust-microline">
+        <li class="badge badge-green">Runs in your browser</li>
+        <li class="badge">Free · No sign-up</li>
+        <li class="badge badge-gold">Wiki-sourced timings</li>
+      </ul>
+    </div>
+
+    <section class="tool" aria-labelledby="tool-heading">
+      <h2 id="tool-heading" class="visually-hidden">Keg planner tool</h2>
+
+      <div class="tool-grid cols-3">
+        <div class="field">
+          <label for="product">Product</label>
+          <select id="product">
+            <option value="wine" selected>Wine (fruit → 3× base)</option>
+            <option value="juice">Juice (vegetable → 2.25× base)</option>
+            <option value="pale-ale">Pale Ale (hops → 300g)</option>
+            <option value="beer">Beer (wheat → 200g)</option>
+            <option value="jelly">Jelly (jar, fruit → 2× + 50)</option>
+            <option value="pickles">Pickles (jar, veg → 2× + 50)</option>
+            <option value="coffee">Coffee (5 beans → 150g)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="items">Items to process</label>
+          <input type="number" id="items" inputmode="numeric" min="1" max="100000" step="1" value="100" />
+          <span class="error" role="alert">Enter a number between 1 and 100,000.</span>
+        </div>
+        <div class="field">
+          <label for="base-price">Base item value (g)</label>
+          <input type="number" id="base-price" inputmode="numeric" min="1" max="10000" step="1" value="750" />
+          <span class="helper">For fixed-price products (ale/beer/coffee) this is ignored.</span>
+        </div>
+      </div>
+
+      <div class="tool-grid cols-2" style="margin-top:14px">
+        <div class="field">
+          <label for="machines">Processors you have</label>
+          <input type="number" id="machines" inputmode="numeric" min="1" max="2000" step="1" value="50" />
+        </div>
+        <div class="field">
+          <label for="days">Days available</label>
+          <input type="number" id="days" inputmode="numeric" min="1" max="112" step="1" value="28" />
+          <span class="helper">28 for one season, 112 for a full year cycle, etc.</span>
+        </div>
+      </div>
+
+      <div class="result-panel" aria-live="polite">
+        <div class="small muted" id="result-caption">Plan</div>
+        <div class="result-value" id="result-value">-</div>
+        <div class="result-meta">
+          <div class="kv"><div class="k">Processing time</div><div class="v" id="out-time">-</div></div>
+          <div class="kv"><div class="k">Batches (per machine)</div><div class="v" id="out-batches">-</div></div>
+          <div class="kv"><div class="k">Capacity in window</div><div class="v" id="out-capacity">-</div></div>
+          <div class="kv"><div class="k">Payout per item</div><div class="v" id="out-peritem">-</div></div>
+          <div class="kv"><div class="k">Total payout</div><div class="v" id="out-total">-</div></div>
+          <div class="kv"><div class="k">Kegs needed</div><div class="v" id="out-needed">-</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="how">
+      <h2 id="how">The maths behind the planner</h2>
+      <p>
+        <code>batches per machine = floor(days ÷ processing days)</code>;
+        <code>capacity = machines × batches</code>;
+        <code>payout per item = keg/jar value</code> (wine 3× fruit base; juice 2.25×; jelly/pickles
+        2× + 50; pale ale 300g; beer 200g; coffee 150g).
+        <code>machines needed = ceil(items ÷ batches)</code>.
+        Processing times from the wiki: wine ~6.25d, juice ~4d, jelly/pickles ~2.5d, pale ale ~1.4d,
+        beer ~1.1d, coffee ~2h.
+      </p>
+    </section>
+
+    <Faq items={faq} />
+
+    <TrustBlock>
+      <p class="mb-0">
+        <strong>Assumption note:</strong> the planner treats a batch as starting at the beginning of
+        the window (no mid-season staggering). In practice you stagger as harvests arrive, padd the
+        model by one batch cycle of slack. Details on the <a href="/methodology/">methodology page</a>.
+      </p>
+    </TrustBlock>
+
+    <section class="section" aria-labelledby="related">
+      <h2 id="related">Related tools</h2>
+      <ul class="related-grid" style="list-style:none;padding:0">
+        <li><a class="tool-card" href="/crop-profit-calculator/"><span class="tc-title">Crop Profit Calculator</span><p class="tc-desc">Which crop feeds the kegs best.</p></a></li>
+        <li><a class="tool-card" href="/best-crop-calculator/"><span class="tc-title">Best Crop Finder</span><p class="tc-desc">Rank crops for the days you have left.</p></a></li>
+      </ul>
+    </section>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    const PRODUCTS = {
+      'wine': { label: 'Wine', days: 6.25, multiplier: 3, fixed: null },
+      'juice': { label: 'Juice', days: 4, multiplier: 2.25, fixed: null },
+      'pale-ale': { label: 'Pale Ale', days: 1.40625, multiplier: null, fixed: 300 },
+      'beer': { label: 'Beer', days: 1.09375, multiplier: null, fixed: 200 },
+      'jelly': { label: 'Jelly', days: 2.5, multiplier: 2, flat: 50, fixed: null },
+      'pickles': { label: 'Pickles', days: 2.5, multiplier: 2, flat: 50, fixed: null },
+      'coffee': { label: 'Coffee', days: 0.125, multiplier: null, fixed: 150, consumes: 5 },
+    };
+
+    function fmt(n) { return n.toLocaleString('en-US', { maximumFractionDigits: 1 }); }
+
+    function compute() {
+      const pid = $('product').value;
+      const items = parseInt($('items').value);
+      const basePrice = parseFloat($('base-price').value);
+      const machines = parseInt($('machines').value);
+      const days = parseFloat($('days').value);
+
+      const validItems = Number.isFinite(items) && items >= 1;
+      const validMachines = Number.isFinite(machines) && machines >= 1;
+      const validDays = Number.isFinite(days) && days >= 1;
+      $('items').closest('.field').classList.toggle('invalid', !validItems);
+      $('machines').closest('.field').classList.toggle('invalid', !validMachines);
+      if (!validItems || !validMachines || !validDays) { $('result-value').textContent = '-'; return; }
+
+      const p = PRODUCTS[pid];
+      const perItem = p.fixed !== null ? p.fixed : (p.multiplier * basePrice + (p.flat ?? 0));
+      const batches = Math.max(1, Math.floor(days / p.days));
+      const capacity = machines * batches;
+      const batchesNeeded = Math.ceil(items / machines);
+      const machinesNeeded = Math.ceil(items / batches);
+      const totalPayout = items * perItem;
+
+      $('result-caption').textContent = `${p.label} plan (${machines} machines, ${days} days)`;
+      if (capacity >= items) {
+        $('result-value').textContent = `All ${fmt(items)} items processed`;
+      } else {
+        $('result-value').textContent = `${fmt(capacity)} of ${fmt(items)} items (${Math.round((capacity / items) * 100)}%)`;
+      }
+      $('out-time').textContent = `${fmt(p.days)} days/item`;
+      $('out-batches').textContent = `${batches}`;
+      $('out-capacity').textContent = `${fmt(capacity)} items`;
+      $('out-peritem').textContent = `${fmt(perItem)}g`;
+      $('out-total').textContent = `${fmt(totalPayout)}g`;
+      $('out-needed').textContent = `${fmt(machinesNeeded)} machines`;
+      window.__result = `${p.label}: ${fmt(perItem)}g/item, ${fmt(machinesNeeded)} machines needed for ${fmt(items)} items in ${days} days`;
+    }
+
+    ['product', 'items', 'base-price', 'machines', 'days'].forEach((id) => $(id).addEventListener('input', compute));
+    compute();
+  </script>
+</Base>

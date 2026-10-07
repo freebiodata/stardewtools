@@ -1,0 +1,81 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { site } from '../../data/site';
+
+const title = 'Methodology: Formulas & Data Sources | StardewTools';
+const description =
+  'Every formula and data source behind StardewTools: crop gold-per-day math, artisan multipliers from the wiki, quality tiers, and our verification process.';
+
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Methodology' },
+];
+---
+
+<Base title={title} description={description} breadcrumbs={breadcrumbs} canonical="/methodology/">
+  <div class="wrap-narrow">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <h1>Methodology &amp; data sources</h1>
+    <p class="lead">
+      The exact formulas and where every number comes from, so you can verify any result.
+    </p>
+    <p class="small muted">Last updated: 08 Oct 2026</p>
+
+    <section class="section">
+      <h2 id="formulas">Core formulas</h2>
+      <ul>
+        <li><strong>Gold per day (single harvest)</strong> = <code>(sell price × harvests − seed cost) ÷ 28</code></li>
+        <li><strong>Harvests (regrow crops)</strong> = <code>1 + floor((days left − first growth) ÷ regrow days)</code></li>
+        <li><strong>Keg value</strong> = base crop price × processing multiplier (wine ≈ 3× fruit base, juice ≈ 2.25× vegetable base, exact per-product values from the wiki, compiled in the crop table)</li>
+        <li><strong>Jar value</strong> = <code>base × 2 + 50</code> (pickles and jelly)</li>
+        <li><strong>Quality multipliers</strong> = silver 1.25×, gold 1.5×, iridium 2.0× (applied with floor rounding)</li>
+        <li><strong>Profession effects</strong> = Tiller +10% crops, Artisan +40% artisan goods, Rancher +20% animal products</li>
+      </ul>
+      <p class="small muted">
+        Quality probabilities depend on farming level and fertilizer; where we model them we use the
+        wiki's documented tables and note assumptions in the tool.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="sources">Data sources</h2>
+      <ul>
+        <li><strong>Crop tables:</strong> Stardew Valley Wiki (Crops pages), prices, growth days, regrow days, trellis/scythe notes. Compiled with source citations in our dataset.</li>
+        <li><strong>Processing:</strong> Wiki pages for Keg, Preserves Jar and Dehydrator, product names, multipliers, processing times.</li>
+        <li><strong>Animals:</strong> Wiki Animals and individual barn/coop pages, animal costs, product prices.</li>
+        <li><strong>Quality/professions:</strong> Wiki Gold and Farming pages, exact multiplier values.</li>
+      </ul>
+      <p class="small muted">
+        Game data reflects the current release (1.6+) at compile time; changes ship with changelog entries.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="limits">Known limitations</h2>
+      <ul>
+        <li><strong>Keg timing during the last days of a season</strong> is simplified: processing that would finish after season end is still valued as if sold, since players can store crops or process across seasons in most cases. Where this matters we say so in the result notes.</li>
+        <li><strong>Quality modeling</strong> uses base quality unless you select a quality mode; mixed-quality harvests average out in practice, and fertilizers shift the mix.</li>
+        <li><strong>Weather and events</strong> (rain days, festivals) can shift planting schedules and are not modeled.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 id="testing">Testing &amp; corrections</h2>
+      <ol>
+        <li>Every formula has a hand-verified test case that must pass before deploy.</li>
+        <li>Worked example: starfruit summer, seed 400g, base sell 750g, 13-day growth. Planting day 1 gives floor(28 ÷ 13) = 2 plantings with replanting; profit = 750×2 − 400×2 = 700g over 28 days = 25.0 gold/day. The calculator reproduces this exactly (see test suite).</li>
+        <li>Corrections: <a href="/contact/">report with a source</a>; confirmed fixes ship with a changelog entry.</li>
+      </ol>
+    </section>
+
+    <section class="section">
+      <h2 id="ai">AI use disclosure</h2>
+      <p>
+        Pages are drafted with tooling assistance and reviewed before publishing; every game value is
+        verified against the wiki sources above. No invented numbers appear on this site.
+      </p>
+    </section>
+  </div>
+</Base>

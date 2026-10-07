@@ -1,0 +1,58 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { site } from '../../data/site';
+
+const title = 'Guides: Stardew Valley Profit Strategy | StardewTools';
+const description =
+  'Practical Stardew Valley profit guides: how gold-per-day works, artisan processing chains, and what to plant. Written to pair with our free calculators.';
+
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Guides' },
+];
+
+const guides = [
+  {
+    href: '/guides/gold-per-day-explained/',
+    title: 'Gold per day, explained properly',
+    desc: 'Why "most profitable crop" arguments go wrong, and the four numbers that actually decide your profit.',
+  },
+];
+---
+
+<Base title={title} description={description} breadcrumbs={breadcrumbs} canonical="/guides/">
+  <div class="wrap">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <div class="hero">
+      <h1>Guides</h1>
+      <p class="value-line">
+        Short, practical explainers for the numbers behind your farm. Each one pairs with a calculator
+        so you can act on it immediately.
+      </p>
+    </div>
+
+    <section class="section" aria-labelledby="list">
+      <h2 id="list" class="visually-hidden">All guides</h2>
+      <ul class="tool-cards">
+        {guides.map((g) => (
+          <li>
+            <a class="tool-card" href={g.href}>
+              <span class="tc-title">{g.title}</span>
+              <p class="tc-desc">{g.desc}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="soon">
+      <h2 id="soon">In the works</h2>
+      <p class="lead">
+        Coming next: a greenhouse layout guide and a keg-shed throughput planner. Want a topic covered?
+        <a href="/contact/"> Tell us</a>.
+      </p>
+    </section>
+  </div>
+</Base>

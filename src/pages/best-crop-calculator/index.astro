@@ -1,0 +1,236 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Faq from '../../components/Faq.astro';
+import TrustBlock from '../../components/TrustBlock.astro';
+import { site } from '../../data/site';
+import { crops } from '../../data/crops';
+
+const title = 'Best Crop Finder: What to Plant Right Now | StardewTools';
+const description =
+  'Rank every Stardew Valley crop by gold per day for the days you actually have left. Raw or artisan views, season and planting day filters. Free tool.';
+
+const jsonLd = [
+  {
+    '@type': 'WebApplication',
+    '@id': `${site.url}/best-crop-calculator/#app`,
+    name: 'Best Crop Finder',
+    url: `${site.url}/best-crop-calculator/`,
+    description:
+      'Ranks Stardew Valley crops by gold per day for the remaining days of the season, with artisan processing options.',
+    applicationCategory: 'GameApplication',
+    operatingSystem: 'Any',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  },
+];
+
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'All tools', href: '/tools/' },
+  { name: 'Best crop finder' },
+];
+
+const faq = [
+  {
+    q: 'What is the most profitable crop in Stardew Valley?',
+    a: 'It depends on your days left and whether you process. Over a full season: ancient fruit and starfruit lead for wine-focused farms; pumpkins and cranberries dominate fall raw; coffee is special (fast regrow, quick coffee). The finder ranks everything for YOUR current day and view, which is why the answer changes.',
+  },
+  {
+    q: 'Why do crops that cannot finish get excluded?',
+    a: 'A crop that will not reach its first harvest before the season ends is a total loss (seeds do not refund). The finder filters those out by default so every row is actually plantable today.',
+  },
+  {
+    q: 'Should I pick the top crop or something else?',
+    a: 'Gold per day is the default goal, but consider: processing capacity (a top raw crop may bottleneck your kegs), trellis handling (green beans/hops/grape cannot be walked through), and multi-season survivors (corn, wheat, sunflower carry into fall). The notes column flags these.',
+  },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  jsonLd={jsonLd}
+  breadcrumbs={breadcrumbs}
+  canonical="/best-crop-calculator/"
+>
+  <div class="wrap">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <div class="hero">
+      <h1>Best Crop Finder</h1>
+      <p class="value-line">
+        "What do I plant right now?" answered with maths: every crop ranked by gold per day for the
+        days you actually have left, raw or processed.
+      </p>
+      <ul class="trust-microline">
+        <li class="badge badge-green">Runs in your browser</li>
+        <li class="badge">Free · No sign-up</li>
+        <li class="badge badge-gold">Wiki-sourced data</li>
+      </ul>
+    </div>
+
+    <section class="tool" aria-labelledby="tool-heading">
+      <h2 id="tool-heading" class="visually-hidden">Best crop finder tool</h2>
+
+      <div class="tool-grid cols-3">
+        <div class="field">
+          <label for="season">Season</label>
+          <select id="season">
+            <option value="spring" selected>Spring</option>
+            <option value="summer">Summer</option>
+            <option value="fall">Fall</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="day">Current day of season</label>
+          <input type="number" id="day" inputmode="numeric" min="1" max="28" step="1" value="1" />
+          <span class="helper">1 = first day, 28 = last day. We rank crops you can still plant.</span>
+          <span class="error" role="alert">Enter a day between 1 and 28.</span>
+        </div>
+        <div class="field">
+          <label for="mode">Goal</label>
+          <select id="mode">
+            <option value="raw" selected>Highest raw gold/day</option>
+            <option value="artisan">Highest processed gold/day</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="result-panel" aria-live="polite" style="min-height:auto">
+        <div class="small muted" id="summary">-</div>
+      </div>
+
+      <div class="table-wrap" style="margin-top:18px">
+        <table>
+          <thead>
+            <tr>
+              <th class="num">#</th>
+              <th>Crop</th>
+              <th class="num">Gold/day</th>
+              <th class="num">Harvests left</th>
+              <th>Pattern</th>
+              <th>Flags</th>
+            </tr>
+          </thead>
+          <tbody id="rows">
+            <tr><td colspan="6" class="small muted">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="how">
+      <h2 id="how">How the ranking works</h2>
+      <p>
+        Each crop is scored with <code>profit = value per harvest × harvests left − seed cost</code>,
+        divided by 28 days for a per-day figure. Harvest count depends on your current day:
+        single-harvest crops need their full growth time remaining; regrow crops get
+        <code>1 + floor((days left − growth) ÷ regrow)</code>. Crops that cannot finish are excluded.
+      </p>
+      <p class="small muted">
+        Processed view uses keg wine (×3 fruit / ×2.25 veg), jar jelly/pickles (×2 + 50) and
+        special keg items (hops→pale ale, wheat→beer, coffee), see the
+        <a href="/methodology/">methodology page</a>.
+      </p>
+    </section>
+
+    <Faq items={faq} />
+
+    <TrustBlock>
+      <p class="mb-0">
+        <strong>Data source:</strong> Stardew Valley Wiki compiled 2026-10-08. Everything is
+        client-side: your day and season never leave the browser.
+      </p>
+    </TrustBlock>
+
+    <section class="section" aria-labelledby="related">
+      <h2 id="related">Related tools</h2>
+      <ul class="related-grid" style="list-style:none;padding:0">
+        <li><a class="tool-card" href="/crop-profit-calculator/"><span class="tc-title">Crop Profit Calculator</span><p class="tc-desc">Deep-dive one crop: raw vs keg vs jar.</p></a></li>
+        <li><a class="tool-card" href="/keg-calculator/"><span class="tc-title">Keg &amp; Jar Planner</span><p class="tc-desc">Match processing capacity to your harvests.</p></a></li>
+      </ul>
+    </section>
+  </div>
+
+  <script define:vars={{ CROPS: crops.map((c) => ({ ...c, yieldPerHarvest: c.yieldPerHarvest || 1 })), SEASON_DAYS: 28 }}>
+    const $ = (id) => document.getElementById(id);
+
+    function harvestsInSeason(c, plantDay, seasonDays) {
+      const daysLeft = seasonDays - plantDay + 1;
+      if (daysLeft < c.growDays) return 0;
+      if (c.regrowDays === null) return Math.floor(daysLeft / c.growDays);
+      const after = daysLeft - c.growDays;
+      return 1 + Math.floor(after / c.regrowDays);
+    }
+    function seedCostSeason(c, harvests) {
+      const unit = c.seedCost ?? 0;
+      if (harvests <= 0) return 0;
+      return c.regrowDays === null ? unit * harvests : unit;
+    }
+    function kegValue(c) {
+      if (c.kegSpecial) return c.kegSpecial.value;
+      if (c.isFruit) return c.sellPrice * 3;
+      return c.sellPrice * 2.25;
+    }
+    function valuePerHarvest(c, mode) {
+      const base = c.sellPrice * c.yieldPerHarvest;
+      if (mode === 'artisan') {
+        const processed = Math.max(kegValue(c), c.sellPrice * 2 + 50);
+        return processed * c.yieldPerHarvest;
+      }
+      return base;
+    }
+    function fmt(n) { return n.toLocaleString('en-US', { maximumFractionDigits: 1 }); }
+
+    function compute() {
+      const season = $('season').value;
+      const day = parseInt($('day').value);
+      const mode = $('mode').value;
+      const valid = Number.isFinite(day) && day >= 1 && day <= 28;
+      $('day').closest('.field').classList.toggle('invalid', !valid);
+      if (!valid) return;
+
+      const daysLeft = 28 - day + 1;
+      // include current season + multi-season crops from adjacent earlier season
+      const pool = CROPS.filter((c) =>
+        c.season === season ||
+        (season === 'fall' && (c.name === 'Corn' || c.name === 'Wheat' || c.name === 'Sunflower')) ||
+        (season === 'summer' && c.name === 'Coffee Bean')
+      );
+
+      const rows = pool.map((c) => {
+        const harvests = harvestsInSeason(c, day, 28);
+        const seedCost = seedCostSeason(c, harvests);
+        const totalRevenue = valuePerHarvest(c, mode) * harvests;
+        const profit = harvests > 0 ? totalRevenue - seedCost : 0;
+        return { ...c, harvests, profit, perDay: profit / 28 };
+      }).filter((r) => r.harvests > 0)
+        .sort((a, b) => b.perDay - a.perDay)
+        .slice(0, 15);
+
+      $('summary').textContent = rows.length
+        ? `Top ${rows.length} crops plantable on day ${day} of ${season}, by ${mode === 'artisan' ? 'processed' : 'raw'} gold per day (${daysLeft} days left in season).`
+        : `No crops can finish with ${daysLeft} days left.`;
+
+      $('rows').innerHTML = rows.map((r, i) => {
+        const flags = [];
+        if (r.trellis) flags.push('trellis');
+        if (r.spans) flags.push('multi-season');
+        if (r.extraNote) flags.push(r.extraNote);
+        const pattern = r.regrowDays === null ? `single (${r.growDays}d)` : `regrow ${r.regrowDays}d`;
+        return `
+        <tr>
+          <td class="num">${i + 1}</td>
+          <td><strong>${r.name}</strong>${r.seedCost === null ? ' <span class="small muted">(seed: ' + (r.seedNote ?? 'special') + ')</span>' : ''}</td>
+          <td class="num">${fmt(r.perDay)}g</td>
+          <td class="num">${r.harvests}</td>
+          <td class="small">${pattern}</td>
+          <td class="small muted">${flags.join(' · ')}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    ['season', 'day', 'mode'].forEach((id) => $(id).addEventListener('input', compute));
+    compute();
+  </script>
+</Base>

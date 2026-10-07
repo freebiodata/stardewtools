@@ -1,0 +1,101 @@
+---
+import Base from '../layouts/Base.astro';
+import ToolCard from '../components/ToolCard.astro';
+import { site } from '../data/site';
+
+const title = 'StardewTools: Free Stardew Valley Profit Calculators';
+const description =
+  'Free Stardew Valley calculators: crop gold per day, best crop for your days left, keg and jar planning. Wiki-sourced data, no sign-up, in-browser.';
+
+const tools = [
+  {
+    href: '/crop-profit-calculator/',
+    title: 'Crop Profit Calculator',
+    desc: 'Gold per day for any crop (raw, keg or jar) with correct harvest counts from your planting day.',
+    badge: 'Most used',
+  },
+  {
+    href: '/best-crop-calculator/',
+    title: 'Best Crop Finder',
+    desc: 'Every crop ranked by gold per day for the days you actually have left this season.',
+    badge: 'Season plan',
+  },
+  {
+    href: '/keg-calculator/',
+    title: 'Keg & Jar Planner',
+    desc: 'How many processors you need, how many batches fit, and the season payout.',
+  },
+];
+---
+
+<Base title={title} description={description} canonical="/">
+  <div class="wrap">
+    <div class="hero" style="padding-top:44px">
+      <h1>Plan your farm with real numbers 🌱</h1>
+      <p class="value-line" style="font-size:1.15rem">
+        Stardew profit questions have exact answers. Get them in seconds: gold per day for every crop,
+        artisan processing maths, and the best thing to plant <em>today</em>.
+        <strong>Free, no sign-up, everything runs in your browser.</strong>
+      </p>
+      <ul class="trust-microline">
+        <li class="badge badge-green">Wiki-sourced data</li>
+        <li class="badge">100% client-side math</li>
+        <li class="badge badge-gold">1.6+ values</li>
+      </ul>
+      <div class="result-actions" style="margin-top:22px">
+        <a class="btn btn-primary" href="/best-crop-calculator/" style="padding:12px 26px;font-size:1.05rem">
+          What should I plant today? →
+        </a>
+        <a class="btn btn-secondary" href="/tools/" style="padding:12px 26px;font-size:1.05rem">Browse all tools</a>
+      </div>
+    </div>
+
+    <section class="section" aria-labelledby="tools-heading">
+      <h2 id="tools-heading">The toolkit</h2>
+      <ul class="tool-cards">
+        {tools.map((t) => (
+          <ToolCard href={t.href} title={t.title} desc={t.desc} badge={t.badge} />
+        ))}
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="why">
+      <h2 id="why">Why StardewTools</h2>
+      <div class="card">
+        <ul style="margin:0">
+          <li><strong>Correct by construction.</strong> Harvest counts depend on your planting day and regrow rhythm, the maths most spreadsheets get wrong. We implement the exact formulas and test them.</li>
+          <li><strong>Wiki-sourced data.</strong> Every price and growth time traces to a stardewvalleywiki.com table, with the compile notes published on the <a href="/methodology/">methodology page</a>.</li>
+          <li><strong>Nothing leaves your browser.</strong> No accounts, no uploads, no tracking of your farm plans.</li>
+          <li><strong>Honest limits.</strong> Where the game's randomness (quality rolls, extra yields) makes exact prediction impossible, we say so and show the documented averages.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="guides-heading">
+      <h2 id="guides-heading">Learn the numbers</h2>
+      <ul class="related-grid" style="list-style:none;padding:0">
+        <li>
+          <a class="tool-card" href="/guides/gold-per-day-explained/">
+            <span class="tc-title">Gold per day, explained</span>
+            <p class="tc-desc">The four numbers that decide crop profit, and the mistakes everyone makes.</p>
+          </a>
+        </li>
+        <li>
+          <a class="tool-card" href="/guides/">
+            <span class="tc-title">All guides →</span>
+            <p class="tc-desc">Practical explainers for profitable farming.</p>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="about-summ">
+      <h2 id="about-summ">Who runs this site</h2>
+      <p class="lead">
+        StardewTools is an independent fan project by long-time players. <a href="/about/">Read the full
+        story</a> or check the <a href="/methodology/">methodology</a> behind every number.
+        Not affiliated with ConcernedApe.
+      </p>
+    </section>
+  </div>
+</Base>

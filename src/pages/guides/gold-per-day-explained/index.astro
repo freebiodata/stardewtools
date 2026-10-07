@@ -1,0 +1,127 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import Faq from '../../../components/Faq.astro';
+import TrustBlock from '../../../components/TrustBlock.astro';
+import { site } from '../../../data/site';
+
+const title = 'Gold Per Day Explained: How Stardew Profit Really Works';
+const description =
+  'Why most "best crop" rankings argue past each other: seed cost, growth time, regrow rhythm and processing decide profit. Four numbers, worked examples.';
+
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Gold per day explained' },
+];
+
+const faq = [
+  {
+    q: 'Is the most expensive crop always the most profitable?',
+    a: 'No. Profit depends on gold per day, not gold per harvest: a cheap fast crop can out-earn an expensive slow one over a season. And with artisan processing, the ranking can flip again, pumpkins out-process melons in a keg cycle, for example. Always compare per-day, after costs.',
+  },
+  {
+    q: 'How do I calculate crop profit for the days I have left?',
+    a: 'Count how many harvests fit before season end: for regrowing crops, 1 + floor((days left − growth days) ÷ regrow days). Multiply by sell price, subtract seed cost, divide by 28. The <a href="/best-crop-calculator/">best crop finder</a> does this for every crop automatically.',
+  },
+  {
+    q: 'Do I subtract the seed cost from every harvest or once?',
+    a: 'Once per planting. If a crop gives 3 harvests from one seed, the seed cost is subtracted once from the total: profit = price × 3 − seed price. (Replanting changes this: each new seed is a new cost.)',
+  },
+  {
+    q: 'When does processing beat selling raw?',
+    a: 'Almost always when you have keg/jar capacity you would otherwise leave idle, because processing multiplies value using only time. The exceptions are when you need cash immediately or when the crop is more valuable as a direct gift/quest item. The calculators show both numbers side by side.',
+  },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  breadcrumbs={breadcrumbs}
+  canonical="/guides/gold-per-day-explained/"
+  type="article"
+  jsonLd={[
+    {
+      '@type': 'Article',
+      headline: 'Gold Per Day Explained: How Stardew Profit Really Works',
+      datePublished: '2026-10-08',
+      dateModified: '2026-10-08',
+      author: { '@type': 'Organization', name: site.name, url: `${site.url}/about/` },
+    },
+  ]}
+>
+  <div class="wrap-narrow">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <h1>Gold per day, explained properly</h1>
+    <p class="lead">
+      "Best crop" arguments go wrong because people compare different things: price per harvest, days to
+      grow, or nothing at all. Four numbers decide everything, and once you have them, the answer is
+      arithmetic.
+    </p>
+    <p class="small muted">Published 08 Oct 2026 · By the StardewTools team</p>
+
+    <section class="section">
+      <h2 id="answer">Quick answer</h2>
+      <p>
+        Profit = (sell price × harvests) − seed cost, divided by the days it takes (28 for a season).
+        Harvests depend on growth time and (for regrowing crops) the regrow rhythm:
+        <code>1 + floor((days left − growth days) ÷ regrow days)</code>.
+        Use the <a href="/crop-profit-calculator/">crop profit calculator</a> for any crop, or the
+        <a href="/best-crop-calculator/">best-crop finder</a> to rank everything for your remaining days.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="numbers">The four numbers that decide profit</h2>
+      <ol class="steps">
+        <li><strong>Seed cost.</strong> What you pay per planting, subtracted once per seed, however many harvests it gives.</li>
+        <li><strong>Sell price per harvest.</strong> Base price, before quality bonuses. Quality pushes this up: silver +25%, gold +50%, iridium +100%.</li>
+        <li><strong>Growth time &amp; regrow rhythm.</strong> Single-harvest crops (cauliflower, melon, pumpkin) pay once; regrow crops (blueberry, cranberry, ancient fruit) keep paying every few days. The rhythm is the whole advantage of the second kind.</li>
+        <li><strong>Processing option.</strong> Kegs and jars multiply value with only time as the input: wine ≈ 3× fruit base, juice ≈ 2.25× vegetable base, pickles/jelly = base × 2 + 50.</li>
+      </ol>
+    </section>
+
+    <section class="section">
+      <h2 id="example">Worked example: starfruit vs cranberry</h2>
+      <p>
+        Starfruit (summer): seed 400g, base 750g, 13 days to grow, no regrow. With replanting,
+        floor(28 ÷ 13) = <strong>2 plantings</strong>: profit = 750×2 − 400×2 = <strong>700g</strong>
+        per season, or <strong>25 g/day</strong> raw. Processed into wine (3× = 2250g each), the same
+        crop netts 2250×2 − 800 = 3700g: <strong>132 g/day</strong>. The keg transforms the answer.
+      </p>
+      <p>
+        Cranberry (fall): seed 240g, base 75g, 7 days grow, 5 days regrow, 2 berries per harvest.
+        From day 1: 1 + floor((28 − 7) ÷ 5) = <strong>5 harvests</strong>. Profit =
+        75 × 2 × 5 − 240 = <strong>510g</strong>, or <strong>18.2 g/day</strong>. Two completely
+        different shapes of income: starfruit pays in big single hits (great for kegs), cranberries
+        in steady small ones (great raw or for jellies).
+      </p>
+      <p class="small muted">
+        Numbers here come from the wiki tables in our dataset; the calculator reproduces both examples
+        exactly (see the test suite on the methodology page). Always check the tool for your exact
+        planting day, mid-season the ranking changes.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="mistakes">Common mistakes</h2>
+      <ul>
+        <li><strong>Comparing per harvest, not per day.</strong> The slow expensive crop often loses.</li>
+        <li><strong>Forgetting seed cost entirely.</strong> For cheap crops the seed can be a third of the revenue.</li>
+        <li><strong>Ignoring processing capacity.</strong> A keg shed changes which crop is best; the tools show both raw and processed numbers for exactly this reason.</li>
+        <li><strong>Planting with too few days left.</strong> A crop that cannot finish is a total loss, the best-crop finder filters these out.</li>
+      </ul>
+    </section>
+
+    <Faq items={faq} />
+
+    <TrustBlock>
+      <p class="mb-0">
+        Data and formulas: <a href="/methodology/">methodology page</a>. This guide contains worked
+        examples computed with the same code the calculators run, no invented numbers.
+      </p>
+    </TrustBlock>
+  </div>
+</Base>

@@ -1,0 +1,70 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { site } from '../../data/site';
+
+const title = 'About StardewTools: Who We Are & Why These Tools Exist';
+const description =
+  'StardewTools is an independent fan toolset for Stardew Valley farmers: crop profit calculators, keg planners and reference data. Free and honest.';
+
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'About' },
+];
+---
+
+<Base title={title} description={description} breadcrumbs={breadcrumbs} canonical="/about/">
+  <div class="wrap-narrow">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <h1>About StardewTools</h1>
+    <p class="lead">
+      We build the planning tools we kept wanting during our own farms: exact profit math, honest
+      assumptions, and no sign-up walls between you and your gold-per-day answer.
+    </p>
+
+    <section class="section">
+      <h2 id="why">Why this site exists</h2>
+      <p>
+        Stardew profit questions have precise answers, a crop's gold per day is arithmetic once you
+        know its prices, growth and processing options, but the answers are scattered across
+        spreadsheets, old forum posts and calculators that skip the details (no artisan processing, no
+        "days I have left" mode, no quality math). StardewTools puts the full calculation in one place,
+        with the source of every number documented.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="how">How the tools are built &amp; tested</h2>
+      <ul>
+        <li><strong>Data from the official wiki.</strong> Crop prices, growth times, processing multipliers and animal data are compiled from stardewvalleywiki.com tables and cross-checked; the compile notes live on the <a href="/methodology/">methodology page</a>.</li>
+        <li><strong>Math with tests.</strong> Every formula has hand-verified test cases that must pass before deploy.</li>
+        <li><strong>Client-side only.</strong> No uploads, no accounts, nothing tracked.</li>
+        <li><strong>Corrections welcome.</strong> If a number is wrong (or a 1.6+ patch changed it), <a href="/contact/">tell us</a> and we fix it with a changelog entry.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 id="money">How the site makes money</h2>
+      <p>
+        Right now: nothing. StardewTools is independent and self-funded. If we ever add sponsorships or
+        affiliate links, they will be clearly labelled (<code>rel="sponsored"</code>) and never affect
+        recommendations. Tools stay free.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="people">Who runs it</h2>
+      <p>
+        A small crew of long-time Stardew players and software engineers. We have strong opinions about
+        greenhouse layouts and will share them if asked.
+      </p>
+      <p class="small muted">
+        For corrections or partnerships: <a href="/contact/">contact page</a> or {site.email}.
+      </p>
+      <p class="small muted">
+        StardewTools is an unofficial fan project, not affiliated with ConcernedApe or Stardew Valley's publishers.
+      </p>
+    </section>
+  </div>
+</Base>

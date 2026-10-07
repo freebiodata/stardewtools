@@ -1,0 +1,288 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Faq from '../../components/Faq.astro';
+import TrustBlock from '../../components/TrustBlock.astro';
+import { site } from '../../data/site';
+import { crops } from '../../data/crops';
+
+const title = 'Crop Profit Calculator: Gold/Day + Artisan | StardewTools';
+const description =
+  'Calculate gold per day for every Stardew crop (raw vs keg vs jar) with seed costs, regrow rhythms and season timing. Data from the official wiki. Free.';
+
+const jsonLd = [
+  {
+    '@type': 'WebApplication',
+    '@id': `${site.url}/crop-profit-calculator/#app`,
+    name: 'Stardew Crop Profit Calculator',
+    url: `${site.url}/crop-profit-calculator/`,
+    description:
+      'Gold-per-day calculator for Stardew Valley crops with artisan processing comparison (keg, preserves jar) and planting-day aware harvest counts.',
+    applicationCategory: 'GameApplication',
+    operatingSystem: 'Any',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  },
+];
+
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'All tools', href: '/tools/' },
+  { name: 'Crop profit calculator' },
+];
+
+const faq = [
+  {
+    q: 'How is gold per day calculated?',
+    a: 'Profit = (sell price × items per harvest × harvests) − seed cost, divided by the 28 days of a season. Harvests depend on your planting day: regrowing crops give <code>1 + floor((days left − growth days) ÷ regrow days)</code>. The calculator applies this exactly and shows every input.',
+  },
+  {
+    q: 'Why does my result differ from other spreadsheets?',
+    a: 'Three common reasons: (1) they subtract seed cost once vs per harvest; (2) they count harvests from day 1 regardless of when you actually plant; (3) they include multi-yield bonuses (we add them where the wiki documents a fixed average like potato ×1.25). Ours documents all assumptions on the <a href="/methodology/">methodology page</a>.',
+  },
+  {
+    q: 'Should I process everything in kegs?',
+    a: 'If you have keg capacity idle: yes for most crops, wine is 3× fruit base and jelly is 2×+50, both with only time as extra cost. But kegs are limited; the tool shows the processed value so you can prioritise the highest-gain crops first.',
+  },
+  {
+    q: 'What about Speed-Gro and fertilizer?',
+    a: 'Speed-Gro changes growth timing (10–33% faster), which the harvest-count math turns into more harvests in some cases. Quality fertilizer shifts the quality mix; both effects are documented on the wiki and are planned as toggles in a future update (see changelog).',
+  },
+  {
+    q: 'Are giant crops or extra-yield chances included?',
+    a: 'Extra-yield averages documented by the wiki (potato, blueberry, cranberry, etc.) are listed in the crop notes and included in the math where a fixed average exists. Giant crops (Cauliflower/Melon/Pumpkin) are a 1% daily 3×3 chance and are noted, not averaged in.',
+  },
+  {
+    q: 'Which crops can I still plant right now?',
+    a: 'Set the planting day to your current in-season day; the calculator marks crops that cannot finish (0 harvests) and shows the ranking of everything that can. For a pure "what do I plant today" list use the <a href="/best-crop-calculator/">best crop finder</a>.',
+  },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  jsonLd={jsonLd}
+  breadcrumbs={breadcrumbs}
+  canonical="/crop-profit-calculator/"
+>
+  <div class="wrap">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <div class="hero">
+      <h1>Crop Profit Calculator</h1>
+      <p class="value-line">
+        Gold per day for every Stardew crop (raw, keg or jar) with seeds costs, multi-yield averages
+        and season timing handled correctly. Wiki-sourced data.
+      </p>
+      <ul class="trust-microline">
+        <li class="badge badge-green">Runs in your browser</li>
+        <li class="badge">Free · No sign-up</li>
+        <li class="badge badge-gold">Wiki-sourced data</li>
+      </ul>
+    </div>
+
+    <section class="tool" aria-labelledby="tool-heading">
+      <h2 id="tool-heading" class="visually-hidden">Crop profit calculator tool</h2>
+
+      <div class="tool-grid cols-3">
+        <div class="field">
+          <label for="crop">Crop</label>
+          <select id="crop">
+            <optgroup label="Spring">
+              {crops.filter((c) => c.season === 'spring').map((c) => (
+                <option value={c.name}>{c.name}</option>
+              ))}
+            </optgroup>
+            <optgroup label="Summer">
+              {crops.filter((c) => c.season === 'summer').map((c) => (
+                <option value={c.name} selected={c.name === 'Starfruit'}>{c.name}</option>
+              ))}
+            </optgroup>
+            <optgroup label="Fall">
+              {crops.filter((c) => c.season === 'fall').map((c) => (
+                <option value={c.name}>{c.name}</option>
+              ))}
+            </optgroup>
+            <optgroup label="Special / Greenhouse">
+              {crops.filter((c) => c.season === 'special' || c.season === 'winter').map((c) => (
+                <option value={c.name}>{c.name}</option>
+              ))}
+            </optgroup>
+          </select>
+        </div>
+        <div class="field">
+          <label for="plant-day">Planting day (in season)</label>
+          <input type="number" id="plant-day" inputmode="numeric" min="1" max="28" step="1" value="1" />
+          <span class="helper">Day 1 = first day of the season. The math uses your day.</span>
+          <span class="error" role="alert">Enter a day between 1 and 28.</span>
+        </div>
+        <div class="field">
+          <label for="view">Show values as</label>
+          <select id="view">
+            <option value="raw" selected>Raw (sold as is)</option>
+            <option value="keg">Keg processed</option>
+            <option value="jar">Jar processed</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="result-panel" aria-live="polite">
+        <div class="small muted" id="result-caption">Profit per day</div>
+        <div class="result-value" id="result-value">-</div>
+        <div class="result-meta">
+          <div class="kv"><div class="k">Harvests this season</div><div class="v" id="out-harvests">-</div></div>
+          <div class="kv"><div class="k">Profit for the season</div><div class="v" id="out-profit">-</div></div>
+          <div class="kv"><div class="k">Revenue per harvest</div><div class="v" id="out-per">-</div></div>
+          <div class="kv"><div class="k">Seed cost</div><div class="v" id="out-seed">-</div></div>
+        </div>
+        <div class="result-actions">
+          <button class="btn btn-primary" type="button" id="copy-btn"><span class="normal-label">Copy result</span><span class="copied-label">✓ Copied</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="ranking">
+      <h2 id="ranking">Season ranking preview</h2>
+      <p class="small muted">Top 10 crops for the selected view and planting day. Use the <a href="/best-crop-calculator/">best crop finder</a> for the full interactive ranking.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="num">#</th>
+              <th>Crop</th>
+              <th>Season</th>
+              <th class="num">Profit/day</th>
+              <th class="num">Harvests</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="ranking-rows">
+            <tr><td colspan="6" class="small muted">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <Faq items={faq} />
+
+    <TrustBlock>
+      <p class="mb-0">
+        <strong>Data source:</strong> Stardew Valley Wiki tables compiled 2026-10-08 (crops, keg,
+        preserves jar). Formula and assumptions: <a href="/methodology/">methodology page</a>.
+        Found a wrong number? <a href="/contact/">Report it</a> with a source.
+      </p>
+    </TrustBlock>
+
+    <section class="section" aria-labelledby="related">
+      <h2 id="related">Related tools</h2>
+      <ul class="related-grid" style="list-style:none;padding:0">
+        <li><a class="tool-card" href="/best-crop-calculator/"><span class="tc-title">Best Crop Finder</span><p class="tc-desc">Rank every crop for the days you have left.</p></a></li>
+        <li><a class="tool-card" href="/keg-calculator/"><span class="tc-title">Keg &amp; Jar Planner</span><p class="tc-desc">Plan processing capacity and throughput.</p></a></li>
+        <li><a class="tool-card" href="/guides/gold-per-day-explained/"><span class="tc-title">Guide: gold per day</span><p class="tc-desc">The four numbers that decide crop profit.</p></a></li>
+      </ul>
+    </section>
+  </div>
+
+  <script define:vars={{ CROPS: crops, SEASON_DAYS: 28 }}>
+    const $ = (id) => document.getElementById(id);
+
+    // mirror of lib/profit.ts (bundled inline for the client)
+    function harvestsInSeason(c, plantDay, seasonDays) {
+      const daysLeft = seasonDays - plantDay + 1;
+      if (daysLeft < c.growDays) return 0;
+      if (c.regrowDays === null) return Math.floor(daysLeft / c.growDays);
+      const after = daysLeft - c.growDays;
+      return 1 + Math.floor(after / c.regrowDays);
+    }
+    function seedCostSeason(c, harvests) {
+      const unit = c.seedCost ?? 0;
+      if (harvests <= 0) return 0;
+      return c.regrowDays === null ? unit * harvests : unit;
+    }
+    function kegValue(c) {
+      if (c.kegSpecial) return { label: c.kegSpecial.name, value: c.kegSpecial.price, days: c.kegSpecial.days };
+      if (c.isFruit) return { label: 'Wine', value: c.sellPrice * 3, days: 6.25 };
+      return { label: 'Juice', value: c.sellPrice * 2.25, days: 4 };
+    }
+    function jarValue(c) {
+      return c.isFruit
+        ? { label: 'Jelly', value: c.sellPrice * 2 + 50 }
+        : { label: 'Pickles', value: c.sellPrice * 2 + 50 };
+    }
+    function computeRow(c, plantDay, mode) {
+      const harvests = harvestsInSeason(c, plantDay, SEASON_DAYS);
+      const seedCost = seedCostSeason(c, harvests);
+      const yieldPer = c.yieldPerHarvest || 1;
+      let valuePer = c.sellPrice * yieldPer;
+      if (mode === 'keg') valuePer = kegValue(c).value * yieldPer;
+      if (mode === 'jar') valuePer = jarValue(c).value * yieldPer;
+      const totalRevenue = valuePer * harvests;
+      const totalProfit = harvests > 0 ? totalRevenue - seedCost : 0;
+      return {
+        ...c,
+        harvests,
+        totalRevenue,
+        totalProfit,
+        profitPerDay: totalProfit / SEASON_DAYS,
+        notPlantable: harvests === 0,
+      };
+    }
+
+    function fmt(n) {
+      return n.toLocaleString('en-US', { maximumFractionDigits: 1 });
+    }
+
+    function compute() {
+      const name = $('crop').value;
+      const plantDay = parseInt($('plant-day').value);
+      const mode = $('view').value;
+      const c = CROPS.find((x) => x.name === name);
+      const valid = Number.isFinite(plantDay) && plantDay >= 1 && plantDay <= 28;
+      $('plant-day').closest('.field').classList.toggle('invalid', !valid);
+      if (!c || !valid) { $('result-value').textContent = '-'; return; }
+
+      const row = computeRow(c, plantDay, mode);
+      const modeLabel = mode === 'keg' ? 'keg' : mode === 'jar' ? 'jar' : 'raw';
+      $('result-caption').textContent = `Profit per day (${modeLabel})`;
+      $('result-value').textContent = row.notPlantable ? 'Cannot finish' : `${fmt(row.profitPerDay)}g/day`;
+      $('out-harvests').textContent = row.notPlantable ? '0 (won\'t finish)' : `${row.harvests}`;
+      $('out-profit').textContent = `${fmt(row.totalProfit)}g`;
+      $('out-per').textContent = `${fmt(row.totalRevenue / Math.max(row.harvests, 1))}g`;
+      $('out-seed').textContent = c.seedCost === null ? `- (${c.seedNote ?? 'not sold'})` : `${c.seedCost}g`;
+      window.__result = row.notPlantable ? 'n/a' : `${fmt(row.profitPerDay)}g/day (${c.name}, ${modeLabel})`;
+
+      // ranking rows
+      const ranked = CROPS
+        .filter((x) => x.season !== 'special' || mode !== 'raw')
+        .map((x) => computeRow(x, plantDay, mode))
+        .filter((r) => !r.notPlantable)
+        .sort((a, b) => b.profitPerDay - a.profitPerDay)
+        .slice(0, 10);
+      const tbody = $('ranking-rows');
+      tbody.innerHTML = ranked.map((r, i) => `
+        <tr>
+          <td class="num">${i + 1}</td>
+          <td>${r.name}</td>
+          <td>${r.season}</td>
+          <td class="num">${fmt(r.profitPerDay)}g</td>
+          <td class="num">${r.harvests}</td>
+          <td class="small muted">${r.extraNote ?? r.spans ?? ''}</td>
+        </tr>`).join('');
+    }
+
+    ['crop', 'plant-day', 'view'].forEach((id) => $(id).addEventListener('input', compute));
+
+    $('copy-btn').addEventListener('click', async () => {
+      const v = window.__result;
+      if (!v) return;
+      try { await navigator.clipboard.writeText(v); } catch {
+        const ta = document.createElement('textarea'); ta.value = v;
+        document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+      }
+      const btn = $('copy-btn'); btn.classList.add('copied');
+      setTimeout(() => btn.classList.remove('copied'), 1800);
+    });
+
+    compute();
+  </script>
+</Base>

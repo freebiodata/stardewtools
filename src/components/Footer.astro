@@ -1,0 +1,49 @@
+---
+import { site } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-cols">
+      <div>
+        <h3>Profit calculators</h3>
+        <ul>
+          <li><a href="/crop-profit-calculator/">Crop profit calculator</a></li>
+          <li><a href="/best-crop-calculator/">Best crop finder</a></li>
+          <li><a href="/keg-calculator/">Keg &amp; jar planner</a></li>
+          <li><a href="/crop-profit-calculator/">Animal profit calculator</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Reference</h3>
+        <ul>
+          <li><a href="/crop-profit-calculator/">Crop reference tables</a></li>
+          <li><a href="/guides/">Guides</a></li>
+          <li><a href="/changelog/">Changelog</a></li>
+          <li><a href="/tools/">All tools</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Site</h3>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/methodology/">Methodology</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="/sitemap/">Sitemap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Legal</h3>
+        <ul>
+          <li><a href="/privacy/">Privacy</a></li>
+          <li><a href="/terms/">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© {year} {site.name}. Free tools, no sign-up.</span>
+      <span>Unofficial fan tool. Not affiliated with ConcernedApe. All calculations run in your browser.</span>
+    </div>
+  </div>
+</footer>

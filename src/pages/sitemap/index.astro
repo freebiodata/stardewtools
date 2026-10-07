@@ -1,0 +1,64 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { site } from '../../data/site';
+
+const title = 'HTML Sitemap: All Pages on StardewTools';
+const description = 'Every page on StardewTools in one crawlable list: calculators, guides, reference tables and site pages.';
+
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Sitemap' },
+];
+
+const toolLinks = [
+  ['/crop-profit-calculator/', 'Crop Profit Calculator'],
+  ['/best-crop-calculator/', 'Best Crop Finder'],
+  ['/keg-calculator/', 'Keg & Jar Planner'],
+];
+
+const guideLinks = [
+  ['/guides/', 'Guides index'],
+  ['/guides/gold-per-day-explained/', 'Gold per day explained'],
+];
+
+const siteLinks = [
+  ['/about/', 'About'],
+  ['/methodology/', 'Methodology & data sources'],
+  ['/contact/', 'Contact'],
+  ['/changelog/', 'Changelog'],
+  ['/privacy/', 'Privacy policy'],
+  ['/terms/', 'Terms of use'],
+  ['/tools/', 'All tools'],
+];
+---
+
+<Base title={title} description={description} breadcrumbs={breadcrumbs} canonical="/sitemap/">
+  <div class="wrap-narrow">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <h1>HTML sitemap</h1>
+    <p class="lead">Everything on StardewTools, grouped for humans and crawlers alike.</p>
+
+    <section class="section">
+      <h2 id="tools">Calculators</h2>
+      <ul>
+        {toolLinks.map(([href, label]) => <li><a href={href}>{label}</a></li>)}
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 id="guides">Guides</h2>
+      <ul>
+        {guideLinks.map(([href, label]) => <li><a href={href}>{label}</a></li>)}
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 id="site-pages">Site</h2>
+      <ul>
+        {siteLinks.map(([href, label]) => <li><a href={href}>{label}</a></li>)}
+      </ul>
+    </section>
+  </div>
+</Base>
