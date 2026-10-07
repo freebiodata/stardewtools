@@ -13,17 +13,20 @@ const tools = [
     title: 'Crop Profit Calculator',
     desc: 'Gold per day for any crop (raw, keg or jar) with correct harvest counts from your planting day.',
     badge: 'Most used',
+    icon: 'Blueberry.png',
   },
   {
     href: '/best-crop-calculator/',
     title: 'Best Crop Finder',
     desc: 'Every crop ranked by gold per day for the days you actually have left this season.',
     badge: 'Season plan',
+    icon: 'Starfruit.png',
   },
   {
     href: '/keg-calculator/',
     title: 'Keg & Jar Planner',
     desc: 'How many processors you need, how many batches fit, and the season payout.',
+    icon: 'Keg.png',
   },
 ];
 ---
@@ -54,7 +57,7 @@ const tools = [
       <h2 id="tools-heading">The toolkit</h2>
       <ul class="tool-cards">
         {tools.map((t) => (
-          <ToolCard href={t.href} title={t.title} desc={t.desc} badge={t.badge} />
+          <ToolCard href={t.href} title={t.title} desc={t.desc} badge={t.badge} icon={t.icon} />
         ))}
       </ul>
     </section>
@@ -76,6 +79,7 @@ const tools = [
       <ul class="related-grid" style="list-style:none;padding:0">
         <li>
           <a class="tool-card" href="/guides/gold-per-day-explained/">
+            <img class="tc-icon" src="/icons/Gold.png" alt="" width="40" height="40" loading="lazy">
             <span class="tc-title">Gold per day, explained</span>
             <p class="tc-desc">The four numbers that decide crop profit, and the mistakes everyone makes.</p>
           </a>

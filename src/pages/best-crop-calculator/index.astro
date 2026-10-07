@@ -5,6 +5,7 @@ import Faq from '../../components/Faq.astro';
 import TrustBlock from '../../components/TrustBlock.astro';
 import { site } from '../../data/site';
 import { crops } from '../../data/crops';
+import { iconFor } from '../../data/crops';
 
 const title = 'Best Crop Finder: What to Plant Right Now | StardewTools';
 const description =
@@ -146,13 +147,13 @@ const faq = [
     <section class="section" aria-labelledby="related">
       <h2 id="related">Related tools</h2>
       <ul class="related-grid" style="list-style:none;padding:0">
-        <li><a class="tool-card" href="/crop-profit-calculator/"><span class="tc-title">Crop Profit Calculator</span><p class="tc-desc">Deep-dive one crop: raw vs keg vs jar.</p></a></li>
-        <li><a class="tool-card" href="/keg-calculator/"><span class="tc-title">Keg &amp; Jar Planner</span><p class="tc-desc">Match processing capacity to your harvests.</p></a></li>
+        <li><a class="tool-card" href="/crop-profit-calculator/"><img class="tc-icon" src="/icons/Parsnip.png" alt="" width="40" height="40" loading="lazy"><span class="tc-title">Crop Profit Calculator</span><p class="tc-desc">Deep-dive one crop: raw vs keg vs jar.</p></a></li>
+        <li><a class="tool-card" href="/keg-calculator/"><img class="tc-icon" src="/icons/Keg.png" alt="" width="40" height="40" loading="lazy"><span class="tc-title">Keg &amp; Jar Planner</span><p class="tc-desc">Match processing capacity to your harvests.</p></a></li>
       </ul>
     </section>
   </div>
 
-  <script define:vars={{ CROPS: crops.map((c) => ({ ...c, yieldPerHarvest: c.yieldPerHarvest || 1 })), SEASON_DAYS: 28 }}>
+  <script define:vars={{ CROPS: crops.map((c) => ({ ...c, yieldPerHarvest: c.yieldPerHarvest || 1, icon: iconFor(c.name) })), SEASON_DAYS: 28 }}>
     const $ = (id) => document.getElementById(id);
 
     function harvestsInSeason(c, plantDay, seasonDays) {
@@ -221,7 +222,7 @@ const faq = [
         return `
         <tr>
           <td class="num">${i + 1}</td>
-          <td><strong>${r.name}</strong>${r.seedCost === null ? ' <span class="small muted">(seed: ' + (r.seedNote ?? 'special') + ')</span>' : ''}</td>
+          <td><span class="ic"><img src="/icons/${r.icon}" alt="" width="26" height="26" loading="lazy"><strong>${r.name}</strong></span>${r.seedCost === null ? ' <span class="small muted">(seed: ' + (r.seedNote ?? 'special') + ')</span>' : ''}</td>
           <td class="num">${fmt(r.perDay)}g</td>
           <td class="num">${r.harvests}</td>
           <td class="small">${pattern}</td>

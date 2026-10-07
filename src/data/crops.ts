@@ -34,6 +34,11 @@ export interface Crop {
   spans?: string;
 }
 
+/** Icon file in /icons/ (downloaded from the Stardew Valley Wiki; see footer credit). */
+export function iconFor(name: string): string {
+  return name.replace(/[^a-z0-9-]+/gi, '_') + '.png';
+}
+
 export const crops: Crop[] = [
   // ================= SPRING =================
   { name: 'Blue Jazz', season: 'spring', seedCost: 30, sellPrice: 50, growDays: 7, regrowDays: null, yieldPerHarvest: 1, isFruit: false },

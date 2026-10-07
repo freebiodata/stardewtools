@@ -5,13 +5,15 @@ interface Props {
   desc: string;
   badge?: string;
   badgeClass?: string;
+  icon?: string;
 }
 
-const { href, title, desc, badge, badgeClass = 'badge-green' } = Astro.props;
+const { href, title, desc, badge, badgeClass = 'badge-green', icon } = Astro.props;
 ---
 
 <li>
   <a class="tool-card" href={href}>
+    {icon && <img class="tc-icon" src={`/icons/${icon}`} alt="" width="40" height="40" loading="lazy" />}
     <span class="tc-title">{title}</span>
     <p class="tc-desc">{desc}</p>
     {badge && <span class={`badge ${badgeClass} tc-badge`}>{badge}</span>}

@@ -5,6 +5,7 @@ import Faq from '../../components/Faq.astro';
 import TrustBlock from '../../components/TrustBlock.astro';
 import { site } from '../../data/site';
 import { crops } from '../../data/crops';
+import { iconFor } from '../../data/crops';
 
 const title = 'Crop Profit Calculator: Gold/Day + Artisan | StardewTools';
 const description =
@@ -127,8 +128,13 @@ const faq = [
       </div>
 
       <div class="result-panel" aria-live="polite">
-        <div class="small muted" id="result-caption">Profit per day</div>
-        <div class="result-value" id="result-value">-</div>
+        <div class="result-head">
+          <img id="result-icon" src="/icons/Parsnip.png" alt="Selected crop icon" width="44" height="44" />
+          <div>
+            <div class="small muted" id="result-caption">Profit per day</div>
+            <div class="result-value" id="result-value">-</div>
+          </div>
+        </div>
         <div class="result-meta">
           <div class="kv"><div class="k">Harvests this season</div><div class="v" id="out-harvests">-</div></div>
           <div class="kv"><div class="k">Profit for the season</div><div class="v" id="out-profit">-</div></div>
@@ -176,14 +182,14 @@ const faq = [
     <section class="section" aria-labelledby="related">
       <h2 id="related">Related tools</h2>
       <ul class="related-grid" style="list-style:none;padding:0">
-        <li><a class="tool-card" href="/best-crop-calculator/"><span class="tc-title">Best Crop Finder</span><p class="tc-desc">Rank every crop for the days you have left.</p></a></li>
-        <li><a class="tool-card" href="/keg-calculator/"><span class="tc-title">Keg &amp; Jar Planner</span><p class="tc-desc">Plan processing capacity and throughput.</p></a></li>
-        <li><a class="tool-card" href="/guides/gold-per-day-explained/"><span class="tc-title">Guide: gold per day</span><p class="tc-desc">The four numbers that decide crop profit.</p></a></li>
+        <li><a class="tool-card" href="/best-crop-calculator/"><img class="tc-icon" src="/icons/Starfruit.png" alt="" width="40" height="40" loading="lazy"><span class="tc-title">Best Crop Finder</span><p class="tc-desc">Rank every crop for the days you have left.</p></a></li>
+        <li><a class="tool-card" href="/keg-calculator/"><img class="tc-icon" src="/icons/Keg.png" alt="" width="40" height="40" loading="lazy"><span class="tc-title">Keg &amp; Jar Planner</span><p class="tc-desc">Plan processing capacity and throughput.</p></a></li>
+        <li><a class="tool-card" href="/guides/gold-per-day-explained/"><img class="tc-icon" src="/icons/Gold.png" alt="" width="40" height="40" loading="lazy"><span class="tc-title">Guide: gold per day</span><p class="tc-desc">The four numbers that decide crop profit.</p></a></li>
       </ul>
     </section>
   </div>
 
-  <script define:vars={{ CROPS: crops, SEASON_DAYS: 28 }}>
+  <script define:vars={{ CROPS: crops.map((c) => ({ ...c, icon: iconFor(c.name) })), SEASON_DAYS: 28 }}>
     const $ = (id) => document.getElementById(id);
 
     // mirror of lib/profit.ts (bundled inline for the client)
@@ -243,6 +249,8 @@ const faq = [
 
       const row = computeRow(c, plantDay, mode);
       const modeLabel = mode === 'keg' ? 'keg' : mode === 'jar' ? 'jar' : 'raw';
+      $('result-icon').src = `/icons/${c.icon}`;
+      $('result-icon').alt = `${c.name} icon`;
       $('result-caption').textContent = `Profit per day (${modeLabel})`;
       $('result-value').textContent = row.notPlantable ? 'Cannot finish' : `${fmt(row.profitPerDay)}g/day`;
       $('out-harvests').textContent = row.notPlantable ? '0 (won\'t finish)' : `${row.harvests}`;
@@ -262,7 +270,7 @@ const faq = [
       tbody.innerHTML = ranked.map((r, i) => `
         <tr>
           <td class="num">${i + 1}</td>
-          <td>${r.name}</td>
+          <td><span class="ic"><img src="/icons/${r.icon}" alt="" width="26" height="26" loading="lazy">${r.name}</span></td>
           <td>${r.season}</td>
           <td class="num">${fmt(r.profitPerDay)}g</td>
           <td class="num">${r.harvests}</td>

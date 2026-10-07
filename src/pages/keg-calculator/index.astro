@@ -113,8 +113,13 @@ const faq = [
       </div>
 
       <div class="result-panel" aria-live="polite">
-        <div class="small muted" id="result-caption">Plan</div>
-        <div class="result-value" id="result-value">-</div>
+        <div class="result-head">
+          <img id="result-icon" src="/icons/Wine.png" alt="Selected product icon" width="44" height="44" />
+          <div>
+            <div class="small muted" id="result-caption">Plan</div>
+            <div class="result-value" id="result-value">-</div>
+          </div>
+        </div>
         <div class="result-meta">
           <div class="kv"><div class="k">Processing time</div><div class="v" id="out-time">-</div></div>
           <div class="kv"><div class="k">Batches (per machine)</div><div class="v" id="out-batches">-</div></div>
@@ -152,8 +157,8 @@ const faq = [
     <section class="section" aria-labelledby="related">
       <h2 id="related">Related tools</h2>
       <ul class="related-grid" style="list-style:none;padding:0">
-        <li><a class="tool-card" href="/crop-profit-calculator/"><span class="tc-title">Crop Profit Calculator</span><p class="tc-desc">Which crop feeds the kegs best.</p></a></li>
-        <li><a class="tool-card" href="/best-crop-calculator/"><span class="tc-title">Best Crop Finder</span><p class="tc-desc">Rank crops for the days you have left.</p></a></li>
+        <li><a class="tool-card" href="/crop-profit-calculator/"><img class="tc-icon" src="/icons/Parsnip.png" alt="" width="40" height="40" loading="lazy"><span class="tc-title">Crop Profit Calculator</span><p class="tc-desc">Which crop feeds the kegs best.</p></a></li>
+        <li><a class="tool-card" href="/best-crop-calculator/"><img class="tc-icon" src="/icons/Starfruit.png" alt="" width="40" height="40" loading="lazy"><span class="tc-title">Best Crop Finder</span><p class="tc-desc">Rank crops for the days you have left.</p></a></li>
       </ul>
     </section>
   </div>
@@ -169,6 +174,10 @@ const faq = [
       'jelly': { label: 'Jelly', days: 2.5, multiplier: 2, flat: 50, fixed: null },
       'pickles': { label: 'Pickles', days: 2.5, multiplier: 2, flat: 50, fixed: null },
       'coffee': { label: 'Coffee', days: 0.125, multiplier: null, fixed: 150, consumes: 5 },
+    };
+    const PRODUCT_ICONS = {
+      'wine': 'Wine.png', 'juice': 'Juice.png', 'pale-ale': 'Pale_Ale.png', 'beer': 'Beer.png',
+      'jelly': 'Preserves_Jar.png', 'pickles': 'Preserves_Jar.png', 'coffee': 'Coffee_Bean.png',
     };
 
     function fmt(n) { return n.toLocaleString('en-US', { maximumFractionDigits: 1 }); }
@@ -196,6 +205,8 @@ const faq = [
       const totalPayout = items * perItem;
 
       $('result-caption').textContent = `${p.label} plan (${machines} machines, ${days} days)`;
+      $('result-icon').src = `/icons/${PRODUCT_ICONS[pid]}`;
+      $('result-icon').alt = `${p.label} icon`;
       if (capacity >= items) {
         $('result-value').textContent = `All ${fmt(items)} items processed`;
       } else {

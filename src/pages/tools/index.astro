@@ -14,12 +14,12 @@ const breadcrumbs = [
 ];
 
 const profit = [
-  { href: '/crop-profit-calculator/', title: 'Crop Profit Calculator', desc: 'Gold per day for any crop, raw or processed through kegs and jars.' },
-  { href: '/best-crop-calculator/', title: 'Best Crop Finder', desc: 'Rank every crop for the days you have left in the season.' },
+  { href: '/crop-profit-calculator/', title: 'Crop Profit Calculator', desc: 'Gold per day for any crop, raw or processed through kegs and jars.', icon: 'Blueberry.png' },
+  { href: '/best-crop-calculator/', title: 'Best Crop Finder', desc: 'Rank every crop for the days you have left in the season.', icon: 'Starfruit.png' },
 ];
 
 const planning = [
-  { href: '/keg-calculator/', title: 'Keg & Jar Planner', desc: 'Plan processing capacity: how many kegs for how many crops, and the payout.' },
+  { href: '/keg-calculator/', title: 'Keg & Jar Planner', desc: 'Plan processing capacity: how many kegs for how many crops, and the payout.', icon: 'Keg.png' },
 ];
 
 const chooser = [
@@ -50,14 +50,14 @@ const chooser = [
     <section class="section" aria-labelledby="profit">
       <h2 id="profit" style="margin-top:0">Profit calculators</h2>
       <ul class="tool-cards">
-        {profit.map((t) => <ToolCard href={t.href} title={t.title} desc={t.desc} />)}
+        {profit.map((t) => <ToolCard href={t.href} title={t.title} desc={t.desc} icon={t.icon} />)}
       </ul>
     </section>
 
     <section class="section" aria-labelledby="planning">
       <h2 id="planning">Planning</h2>
       <ul class="tool-cards">
-        {planning.map((t) => <ToolCard href={t.href} title={t.title} desc={t.desc} />)}
+        {planning.map((t) => <ToolCard href={t.href} title={t.title} desc={t.desc} icon={t.icon} />)}
       </ul>
     </section>
 

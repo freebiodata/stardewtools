@@ -728,3 +728,10 @@ td.num, th.num { font-family: var(--font-mono); text-align: right; }
   .hero .value-line { font-size: 1rem; margin-bottom: 0.6em; }
   .trust-microline { margin: 10px 0 15px; }
 }
+
+/* --- game icons (Stardew Valley Wiki) --- */
+.ic { display: inline-flex; align-items: center; gap: 8px; }
+.ic img { width: 26px; height: 26px; image-rendering: pixelated; flex: none; }
+.result-head { display: flex; align-items: center; gap: 12px; }
+.result-head img { width: 44px; height: 44px; image-rendering: pixelated; background: var(--panel-2, #f4f1e6); border-radius: 8px; padding: 3px; }
+.tool-card .tc-icon { width: 40px; height: 40px; image-rendering: pixelated; margin-bottom: 8px; }
