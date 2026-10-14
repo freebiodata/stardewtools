@@ -1,10 +1,10 @@
-# StardewTools — Free Stardew Valley Profit Calculators
+# StardewTools - Free Stardew Valley Profit Calculators
 
 A cozy, light-themed static Astro site with 3 free browser-based calculators for Stardew Valley farmers:
 
 | Tool | URL | What it does |
 |---|---|---|
-| Crop Profit Calculator | `/crop-profit-calculator/` | Gold per day for any crop — raw, keg or jar — with replanting-aware harvest counts |
+| Crop Profit Calculator | `/crop-profit-calculator/` | Gold per day for any crop - raw, keg or jar - with replanting-aware harvest counts |
 | Best Crop Finder | `/best-crop-calculator/` | Every crop ranked by gold/day for the days you actually have left |
 | Keg & Jar Planner | `/keg-calculator/` | Processing throughput: batches, capacity, machines needed, payout |
 
@@ -12,7 +12,7 @@ Plus support pages: home, all-tools hub, guide (gold per day), about, methodolog
 
 ## Data provenance
 
-Crop prices, growth times, artisan multipliers and processing times are compiled from stardewvalleywiki.com (fetched 2026-10-08) — the full source trail with per-value citations lives in `research/batch3/worker-stardew-data.md` (workspace). The site's copy of the dataset is `src/data/crops.ts`.
+Crop prices, growth times, artisan multipliers and processing times are compiled from stardewvalleywiki.com (fetched 2026-10-08) - the full source trail with per-value citations lives in `research/batch3/worker-stardew-data.md` (workspace). The site's copy of the dataset is `src/data/crops.ts`.
 
 **Not affiliated with ConcernedApe** (stated on site).
 
@@ -64,7 +64,7 @@ scripts/
 - **Add a crop**: append to `src/data/crops.ts` (verify against the wiki first; note the source in the worker file).
 - **Change copy**: each page's text lives in its own `src/pages/<tool>/index.astro`.
 - **Change colors**: `src/styles/global.css` variables at `:root`.
-- **Recompute examples**: `node scripts/test-math.mjs` — never hand-wave numbers.
+- **Recompute examples**: `node scripts/test-math.mjs` - never hand-wave numbers.
 - **Domain change**: `src/data/site.ts` + `astro.config.mjs` + `public/robots.txt`.
 
 ## Deploy (Cloudflare Pages)
